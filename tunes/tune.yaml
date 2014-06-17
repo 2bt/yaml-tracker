@@ -1,0 +1,276 @@
+frames: 800
+ticks: 8
+table:
+  - [ d1, m1,  b1 ]
+  - [ d2, m1,  b2 ]
+  - [ d3, ---, b3 ]
+  - [ d4, m1,  b4 ]
+
+instruments:
+  bass:
+    panning:0
+    sustain:1
+    attack:0.1
+    decay:0.99
+    release:0.99
+
+    o:0
+    pw:0.4
+    w:PULSE
+    :5
+    sustain:0
+
+  click: >
+    v:1
+    p:0.3
+    o:5
+    attack:0.1
+    sustain:0
+    decay:0.9996
+    w:NOISE
+
+  beat: >
+    v:1
+    p:-0.2
+    attack:0.1
+    sustain:1
+    decay:0.999
+    pw:0.5
+    w:PULSE
+    o:0    :1
+    o:-2   :1
+    o:-4   :1
+    o:-8   :1
+    o:-13  :1
+    sustain:0
+    o:-18  :1
+
+
+  snare: >
+    v:1
+    p:0.1
+    attack:0.1
+    sustain:0
+    decay:0.9999
+    pw:0.5
+
+    w:NOISE       :1
+    o:0 w:PULSE   :1
+    w:NOISE       :1
+    o:-7 w:PULSE  :1
+    o:-11 w:PULSE :1
+    o:-14 w:PULSE :1
+    decay:0.9995
+    o:-16 w:PULSE :1
+    o:-18 w:PULSE :1
+    o:-20 w:PULSE :1
+
+  lead: >
+    p:0
+    v:0.6
+    attack:0.001
+    release:0.9998
+
+    offset:0.3  :1
+    offset:0    :1
+    offset:-0.3 :1
+    offset:0    :1
+    loop:1
+
+
+  arp1: >
+    pw:0.3
+    attack:0.1
+    sustain:0.5
+
+    o:0   :2
+    o:3   :2
+    o:7   :2
+    o:10  :2
+    loop:3
+
+  midi: >
+    decay:0.99993
+    p:0.1
+    v:1.2
+    pw:0
+    o:0
+    w:NOISE
+    :1
+    w:TRIANGLE
+    :30
+
+    o:0.2 :1
+    o:0.4 :1
+    o:0.2 :1
+    o:0.0 :1
+    o:-0.2 :1
+    o:-0.4 :1
+    o:-0.2 :1
+    o:0.0 :1
+    loop:9
+
+
+
+
+patterns:
+  ---:
+    - ---
+  b1:
+    - c-2 i:bass p:0.4
+    - c-2
+    - c-3 p:-0.4
+    - c-2
+    - c-2
+    - c-3 p:0.3
+    - c-2
+    - c-3
+    - c-2
+    - c-2
+    - c-3
+    - c-2
+    - c-2
+    - i:arp1 c-4
+    -
+    -
+  b2:
+    - i:bass c-2
+    - c-2
+    - c-3
+    - c-2
+    - c-2
+    - c-3
+    - c-2
+    - c-3
+    - c-2
+    - c-2
+    - a#2 p:0.3
+    - c-2
+    - c-2
+    - c-3
+    - c-4
+    - c-5
+  b3:
+    - i:bass f-2
+    - f-2
+    - f-3
+    - f-2
+    - f-2
+    - f-3 p:0.2
+    - f-2
+    - g-3 p:-0.4
+    - f-2
+    - f-2
+    - f-3 p:0.5
+    - f-2
+    - f-2
+    - f-3 p:-0.2
+    - f-2
+    - g-3 p:0.3
+  b4:
+    - d#2
+    - d#2
+    - d#3
+    - d#2
+    - d#2
+    - g-3 p:-0.4
+    - d#2
+    - f-3
+    - d-2
+    - d-2
+    - d-3
+    - d-2
+    - a#1
+    - a#2
+    - a#1
+    -
+
+  m1:
+    - c-4 i:lead
+    -
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - g-4 p:0.2
+    -
+    - ---
+    - d#4 p:-0.2
+
+
+
+  d1:
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-4
+    - c-5 i:snare
+    -
+    - c-3 i:beat
+    - c-4 i:click
+    -
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-5 i:snare
+    -
+    -
+    -
+  d2:
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-4
+    - c-5 i:snare
+    -
+    - c-3 i:beat
+    - c-4 i:click
+    -
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-5 i:snare
+    -
+    -
+    - c-5 i:snare
+  d3:
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-4
+    - c-5 i:snare
+    -
+    - c-3 i:beat
+    - c-4 i:click
+    -
+    - c-3 i:beat
+    -
+    - c-4 i:click
+    - c-5 i:snare
+    -
+    -
+    -
+  d4:
+    - c-3 i:beat
+    - c-3 i:beat
+    - c-4 i:click
+    - c-4
+    - c-5 i:snare
+    -
+    - c-3 i:beat
+    - c-4 i:click
+    -
+    - c-5 i:snare p:-0.3
+    - c-3 i:beat
+    - c-4 i:click
+    - c-5 i:snare
+    -
+    -
+    - c-5 i:snare :4 g-4
+
