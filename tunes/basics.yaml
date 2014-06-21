@@ -12,13 +12,15 @@ table:
 
 instruments:
   midi: >
-    ps:0.005
     pw:0.4
+    pw~:0.005
     o:-7 :1 o:0
     :30
     vs:0.08
     vd:0.2
   bass: >
+    lpf:ON
+    lpf_reso:2
     pw:0.2
     o:-12
     :20 ---
@@ -26,7 +28,7 @@ instruments:
 
   arp: >
     pw:0.2
-    ps:0.006
+    pw~:0.006
     attack:0.002
     release:0.9999
   arp1: >
@@ -228,7 +230,7 @@ patterns:
 
 
   b1:
-    - c-3 i:bass
+    - c-3 i:bass lpf_freq:100 lpf_freq~:10
     - c-3
     - ---
     - c-3
@@ -262,7 +264,7 @@ patterns:
     - ---
     - d#3
   b2:
-    - g-2
+    - g-2 lpf_freq~:20
     - g-2
     - ---
     - g-2
@@ -279,7 +281,7 @@ patterns:
     - ---
     - a-3
 
-    - c-3
+    - c-3 lpf_freq~:-40
     - c-3
     - ---
     - c-3
@@ -297,7 +299,7 @@ patterns:
     - g-2
 
   b3:
-    - e-3
+    - e-3 i:bass lpf_freq:100 lpf_freq~:10
     - e-3
     - ---
     - e-3
@@ -330,7 +332,7 @@ patterns:
     -
     - a#2
   b4:
-    - a-2
+    - a-2 lpf_freq~:-10
     - a-2
     - ---
     - a-2

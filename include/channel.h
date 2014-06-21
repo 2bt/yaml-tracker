@@ -3,6 +3,36 @@
 #include <vector>
 #include <string>
 
+
+class LPF {
+public:
+	void initialize() {
+		_pos = 0;
+		_speed = 0;
+	}
+
+	void set(float freq, float reso) {
+		float w = 2 * M_PI * freq / 44100.0;
+		float q = 1 - w / (2 * (reso + 0.5 / (1 + w)) + w - 2);
+		_r = q * q;
+		_c = _r + 1 - 2 * cosf(w) * q;
+	}
+	float mix(float a) {
+		_speed += (a - _pos) * _c;
+		_pos += _speed;
+		_speed *= _r;
+		return _pos;
+	}
+
+private:
+	float _r;
+	float _c;
+
+	float _pos;
+	float _speed;
+};
+
+
 class Channel {
 public:
 	struct Command {
@@ -50,24 +80,35 @@ private:
 	float			_release;
 
 	float			_pulsewidth;
-	float			_pulsesweep;
+	float			_pulsewidth_sweep;
 	float			_vibrato_phase;
 	float			_vibrato_speed;
 	float			_vibrato_depth;
 	Wave			_wave;
+
+	bool			_lpf_active;
+	float			_lpf_freq;
+	float			_lpf_freq_sweep;
+	float			_lpf_reso;
+	LPF				_lpf;
 
 	std::string		_instrument;
 
 
 	struct CmdExecState {
 		std::vector<Command>	cmds;
-		size_t					pos;
+		int						pos;
 		int						wait;
+		int						loop_count;
 
+		CmdExecState(const std::vector<Command>& c={}) {
+			set(c);
+		}
 		void set(std::vector<Command> c) {
 			cmds = c;
 			pos = 0;
 			wait = 0;
+			loop_count = -1;
 		}
 	};
 	CmdExecState	_inst_ces;

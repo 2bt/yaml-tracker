@@ -1,10 +1,11 @@
 frames: 800
 ticks: 8
 table:
-  - [ b1, p1 ]
-  - [ b2, p2 ]
-#  - [ b3, p3 ]
-#  - [ b4, p4 ]
+  - [ perc1, b1, p1 ]
+  - [ perc2, b2, p2 ]
+  - [ perc1, b1, p1 ]
+  - [ perc2, b4, p2 ]
+
 instruments:
   midi: >
     w:NOISE
@@ -40,11 +41,99 @@ instruments:
 
 
   b: >
+    lpf:ON
+    lpf_reso:3
+    lpf_freq:2000
+
+    wave:PULSE
+    pulsewidth:0.5
+    offset:0
+
+    loop_count:6
+
+    wait:1
+    lpf_freq+:-200
+    loop:-2
+
+
+  kick: >
+
+    volume:1
+    panning:-0.1
+    pulsewidth:0.5
+    decay:0.9999
+    sustain:0
+    release:0.9993
+
+    lpf:ON
+    lpf_freq:10000
+    lpf_reso:1
+
+    o:-2 w:NOISE :2
+
     w:PULSE
-    pw:0.5
-    o:0
+    lpf_freq:1400
+
+    :1
+    o+:-2
+    loop:-2
+
+  snare: >
+    lpf:ON
+    lpf_freq:8000
+    lpf_reso:4
+    volume:1
+    panning:0.1
+    sustain:0
+    decay:0.9998
+    offset:3
+
+    wave:NOISE
+    wait:2
+    wave:PULSE
+    wait:1
+    offset+:-1
+    lpf_freq+:-800
+    loop:-6
 
 patterns:
+  perc1:
+    - c-4 i:kick
+    -
+    - ---
+    -
+    - c-4 i:snare
+    -
+    - c-4 i:kick
+    - ---
+    -
+    -
+    -
+    -
+    - c-4 i:snare
+    -
+    -
+    -
+  perc2:
+    - c-4 i:kick
+    - c-4 i:kick
+    - ---
+    -
+    - c-4 i:snare
+    -
+    - c-4 i:kick
+    - ---
+    -
+    - c-4 i:snare v:0.7
+    - c-4 i:kick
+    -
+    - c-4 i:snare
+    -
+    -
+    -
+
+
+
   b1:
     - a-2 i:b
     -
@@ -79,33 +168,17 @@ patterns:
     - g-2
     - g#1
     - g#2
-  b3:
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
+
   b4:
+    - g-2
     -
+    - ---
+    - g-2
+    - ---
     -
+    - f#2
     -
-    -
-    -
-    -
-    -
-    -
-    -
+    - ---
     -
     -
     -
@@ -146,42 +219,6 @@ patterns:
     - a#3* i:p2
     -
     - ---
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-
-  p3:
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-
-  p4:
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
     -
     -
     -

@@ -14,24 +14,30 @@ void Channel::initialize() {
 	_shift = 0x7ffff8;
 	_state = State::Off;
 
-	CmdExecState ces;
-	ces.wait = ces.pos = 0;
-	ces.cmds = {
+	CmdExecState ces({
 		{ "wave",			"PULSE" },
 		{ "offset",			"0" },
 		{ "pulsewidth",		"0.5" },
-		{ "pulsesweep",		"0" },
+		{ "pulsewidth~",	"0" },
 		{ "panning",		"0" },
 		{ "volume",			"1" },
-		{ "vibratospeed",	"0.1" },
-		{ "vibratodepth",	"0" },
+		{ "vibrato_speed",	"0.1" },
+		{ "vibrato_depth",	"0" },
+
+		{ "lpf",			"OFF" },
+		{ "lpf_freq",		"2000" },
+		{ "lpf_freq~",		"0" },
+		{ "lpf_reso",		"1" },
 
 		{ "attack",			"0.002" },
 		{ "decay",			"0.99992" },
 		{ "sustain",		"0.5" },
 		{ "release",		"0.999" },
-	};
+	});
 	exec_commands(ces);
+
+	_lpf.initialize();
+	_lpf.set(_lpf_freq, _lpf_reso);
 
 
 }
@@ -42,7 +48,16 @@ void Channel::tick(const map<string, vector<Command>>& instruments) {
 
 
 
-	_pulsewidth = fmodf(_pulsewidth + _pulsesweep, 1);
+	_pulsewidth = fmodf(_pulsewidth + _pulsewidth_sweep, 1);
+
+	if (_lpf_freq_sweep != 0) {
+		_lpf_freq += _lpf_freq_sweep;
+		if (_lpf_freq < 10) _lpf_freq = 10;
+		_lpf.set(_lpf_freq, _lpf_reso);
+	}
+
+
+
 	_vibrato_phase = fmodf(_vibrato_phase + _vibrato_speed, 1);
 	float vib = sinf(_vibrato_phase * 2 * M_PI) * _vibrato_depth;
 	_speed = powf(2, float(_note + _offset + vib - 57) * (1 / 12.0)) * (440.0 / 44100);
@@ -57,7 +72,8 @@ void Channel::exec_commands(CmdExecState& ces,
 			ces.wait--;
 			return;
 		}
-		if (ces.pos >= ces.cmds.size()) return;
+
+		if (ces.pos >= (int) ces.cmds.size()) return;
 		Command& cmd = ces.cmds[ces.pos++];
 
 		if (cmd.name == "note") {
@@ -94,8 +110,7 @@ void Channel::exec_commands(CmdExecState& ces,
 				throw logic_error("unknown instrument: " + cmd.value);
 			}
 			if (&ces == &_inst_ces) {
-				CmdExecState c;
-				c.set(instruments.at(cmd.value));
+				CmdExecState c(instruments.at(cmd.value));
 				exec_commands(c, instruments);
 			}
 			else {
@@ -127,16 +142,19 @@ void Channel::exec_commands(CmdExecState& ces,
 		else if (cmd.name == "offset" || cmd.name == "o") {
 			_offset = strtofloat(cmd.value);
 		}
+		else if (cmd.name == "offset+" || cmd.name == "o+") {
+			_offset += strtofloat(cmd.value);
+		}
 		else if (cmd.name == "pulsewidth" || cmd.name == "pw") {
 			_pulsewidth = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "pulsesweep" || cmd.name == "ps") {
-			_pulsesweep = strtofloat(cmd.value);
+		else if (cmd.name == "pulsewidth~" || cmd.name == "pw~") {
+			_pulsewidth_sweep = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "vibratospeed" || cmd.name == "vs") {
+		else if (cmd.name == "vibrato_speed" || cmd.name == "vs") {
 			_vibrato_speed = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "vibratodepth" || cmd.name == "vd") {
+		else if (cmd.name == "vibrato_depth" || cmd.name == "vd") {
 			_vibrato_depth = strtofloat(cmd.value);
 		}
 		else if (cmd.name == "wave" || cmd.name == "w") {
@@ -153,8 +171,38 @@ void Channel::exec_commands(CmdExecState& ces,
 				throw logic_error("error parsing wave: " + cmd.name);
 			}
 		}
+		else if (cmd.name == "lpf") {
+			if (cmd.value == "ON") _lpf_active = true;
+			else if (cmd.value == "OFF") _lpf_active = false;
+			else throw logic_error("error parsing lpf: " + cmd.name);
+		}
+		else if (cmd.name == "lpf_freq") {
+			_lpf_freq = strtofloat(cmd.value);
+			_lpf.set(_lpf_freq, _lpf_reso);
+		}
+		else if (cmd.name == "lpf_freq+") {
+			_lpf_freq += strtofloat(cmd.value);
+			if (_lpf_freq < 10) _lpf_freq = 10;
+			_lpf.set(_lpf_freq, _lpf_reso);
+		}
+		else if (cmd.name == "lpf_freq~") {
+			_lpf_freq_sweep = strtofloat(cmd.value);
+		}
+		else if (cmd.name == "lpf_reso") {
+			_lpf_reso = strtofloat(cmd.value);
+			_lpf.set(_lpf_freq, _lpf_reso);
+		}
+		else if (cmd.name == "loop_count") {
+			ces.loop_count = strtoint(cmd.value);
+		}
 		else if (cmd.name == "loop") {
-			ces.pos = max(0, strtoint(cmd.value));
+			if (ces.loop_count != 0) {
+				if (ces.loop_count > 0) ces.loop_count--;
+
+				int v = strtoint(cmd.value);
+				if (v >= 0) ces.pos = v;
+				else ces.pos = max(0, ces.pos + v - 1);
+			}
 		}
 		else if (cmd.name == "wait" || cmd.name == "") {
 			ces.wait = strtoint(cmd.value);
@@ -231,36 +279,7 @@ void Channel::addMix(float frame[2]) {
 
 	amp *= _level;
 
-	// FIXME: filter
-	if (_instrument == "bass") {
-		static double fff = 0;
-		fff += 0.00002;
-
-		double resofreq = 100 + 2000 + cos(fff) * 2000;
-		double ampl = 3;
-		double w = 2*M_PI*resofreq/44100.0; // Pole angle
-		double q = 1-w/(2*(ampl+0.5/(1+w))+w-2); // Pole magnitude
-		double r = q*q;
-		double c = r+1.0-2.0*cos(w)*q;
-
-		static double vibrapos = 0;
-		static double vibraspeed = 0;
-
-		// Accelerate vibra by signal-vibra, multiplied by lowpasscutoff
-		vibraspeed += (amp - vibrapos) * c;
-
-		// Add velocity to vibra's position
-		vibrapos += vibraspeed;
-
-		// Attenuate/amplify vibra's velocity by resonance
-		vibraspeed *= r;
-
-		// Check clipping
-		amp = vibrapos;
-		if (amp < -1) amp = -1;
-		if (amp > 1) amp = 1;
-	}
-
+	if (_lpf_active) amp = _lpf.mix(amp);
 
 	amp *= _volume;
 
