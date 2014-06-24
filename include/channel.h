@@ -62,7 +62,7 @@ public:
 
 private:
 	enum class State { Off, Release, Attack, Hold };
-	enum class Wave { Pulse, Triangle, Sine, Noise };
+	enum class Wave { Pulse, Triangle, Sine, Noise, C64Noise };
 
 
 	State			_state;

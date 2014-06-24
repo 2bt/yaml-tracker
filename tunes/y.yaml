@@ -22,7 +22,7 @@ instruments:
     w:PULSE
 
   p1: >
-    i:p
+    call:p
 
     o:0   :2
     o:4   :2
@@ -31,7 +31,7 @@ instruments:
     loop:1
 
   p2: >
-    i:p
+    call:p
 
     o:0   :2
     o:3   :2

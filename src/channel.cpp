@@ -22,9 +22,9 @@ const vector<Channel::Command> Channel::get_default_instrument() {
 		{ "gliss",			"0" },
 
 		{ "filter",			"OFF" },
-		{ "filter-freq",		"2000" },
-		{ "filter-freq~",		"0" },
-		{ "filter-reso",		"1" },
+		{ "filter-freq",	"2000" },
+		{ "filter-freq~",	"0" },
+		{ "filter-reso",	"1" },
 
 		{ "attack",			"0.002" },
 		{ "decay",			"0.99992" },
@@ -134,15 +134,16 @@ void Channel::exec_commands(CmdExecState& ces,
 			if (!instruments.count(cmd.value)) {
 				throw logic_error("unknown instrument: " + cmd.value);
 			}
-			if (&ces == &_inst_ces) {
-				CmdExecState c(instruments.at(cmd.value));
-				exec_commands(c, instruments);
+			_instrument = cmd.value;
+			_inst_ces.set(instruments.at(_instrument));
+			exec_commands(_inst_ces, instruments);
+		}
+		else if (cmd.name == "call") {
+			if (!instruments.count(cmd.value)) {
+				throw logic_error("unknown instrument: " + cmd.value);
 			}
-			else {
-				_instrument = cmd.value;
-				_inst_ces.set(instruments.at(_instrument));
-				exec_commands(_inst_ces, instruments);
-			}
+			CmdExecState c(instruments.at(cmd.value));
+			exec_commands(c, instruments);
 		}
 		else if (cmd.name == "attack") {
 			_attack = strtofloat(cmd.value);
@@ -193,6 +194,7 @@ void Channel::exec_commands(CmdExecState& ces,
 				_wave = map<string, Wave> {
 					{ "PULSE",		Wave::Pulse },
 					{ "TRIANGLE",	Wave::Triangle },
+					{ "C64NOISE",	Wave::C64Noise },
 					{ "NOISE",		Wave::Noise },
 					{ "SINE",		Wave::Sine }
 				}.at(cmd.value);
@@ -269,7 +271,7 @@ void Channel::addMix(float frame[2]) {
 
 
 	_phase += _speed;
-	if (_wave != Wave::Noise) _phase = fmodf(_phase, 1);
+	if (_wave != Wave::C64Noise) _phase = fmodf(_phase, 1);
 
 	float amp = 0;
 
@@ -285,7 +287,10 @@ void Channel::addMix(float frame[2]) {
 	case Wave::Sine:
 		amp = sinf(_phase * 2 * M_PI);
 		break;
-	case Wave::Noise: {
+	case Wave::Noise:
+		amp = rand() / float(RAND_MAX) * 2 - 1;
+		break;
+	case Wave::C64Noise: {
 		unsigned int s = _shift;
 		unsigned int b;
 		while (_phase > 0.1) {

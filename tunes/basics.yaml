@@ -32,55 +32,55 @@ instruments:
     attack:0.002
     release:0.9999
   arp1: >
-    i:arp
+    call:arp
     o:4   :3
     o:0   :3
     o:-5  :3
     loop:1
   arp2: >
-    i:arp
+    call:arp
     o:5   :3
     o:0   :3
     o:-4  :3
     loop:1
   arp3: >
-    i:arp
+    call:arp
     o:5   :3
     o:0   :3
     o:-2  :3
     loop:1
   arp4: >
-    i:arp
+    call:arp
     o:5   :3
     o:0   :3
     o:-3  :3
     loop:1
   arp5: >
-    i:arp
+    call:arp
     o:3   :3
     o:0   :3
     o:-5  :3
     loop:1
   arp6: >
-    i:arp
+    call:arp
     o:7   :3
     o:0   :3
     o:-3  :3
     loop:1
   arp7: >
-    i:arp
+    call:arp
     o:4   :3
     o:0   :3
     o:-6  :3
     loop:1
   arp8: >
-    i:arp
+    call:arp
     o:7   :3
     o:0   :3
     o:-4  :3
     loop:1
   arp9: >
-    i:arp
+    call:arp
     o:3   :3
     o:0   :3
     o:-4  :3
