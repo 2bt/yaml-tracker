@@ -1,0 +1,194 @@
+frames: 400
+ticks: 16
+
+table:
+  - [ drm-0, prc-0, bas-0, pad-0 ]
+  - [ drm-0, prc-0, -----, ----- ]
+instruments:
+  bass-init: >
+    call:default
+    gliss:1
+    filter:ON
+    filter-freq:1000
+    filter-reso:1
+    pulsewidth:0.5
+    pulsewidth~:0.006
+    offset:-12
+
+  bass: >
+    call:bass-init
+
+
+  arp-047: >
+    call:default
+    panning:0.3
+    attack:0.0001
+    release:0.9999
+
+    offset:0
+    wait:3
+    offset:4
+    wait:3
+    offset:4
+    wait:3
+    loop:-6
+
+  kick: >
+    call:default
+    panning:0.1
+    volume:1.4
+    decay:0.9998
+    sustain:0.2
+    release:0.99
+
+    filter:ON
+    filter-freq:1000
+    filter-reso:3
+
+    offset:0
+    wave:C64NOISE
+    wait:5
+
+    resolution:6
+    wave:TRIANGLE
+
+    loop-count:16
+    offset+:-1.3
+    filter-freq+:-20
+    wait:1
+    loop:-3
+    ---
+
+  snare:
+    call:default
+    panning:-0.2
+
+    filter:ON
+    filter-freq:8000
+    filter-reso:2
+
+    sustain:0
+    decay:0.9999
+
+    offset:10
+    resolution:6
+
+    loop-count:1
+
+    wave:C64NOISE
+    wait:2
+    wave:SINE
+    offset+:-3
+    wait:3
+    loop:-5
+    ---
+
+    loop-count:-1
+
+    offset+:-1
+    wait:1
+    loop:-2
+
+
+  hat:
+    call:default
+    panning:0.3
+    volume:0.3
+    offset:20
+    wave:NOISE
+    decay:0.9994
+    sustain:0
+
+    filter:ON
+    filter-freq:7000
+    filter-reso:3
+
+patterns:
+  -----:
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+
+  prc-0:
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    -
+    -
+  drm-0:
+    -
+    -
+    - c-4 i:hat
+    -
+    - c-4 i:snare
+    -
+    - c-4 i:hat
+    -
+    -
+    -
+    - c-4 i:hat
+    -
+    - c-4 i:snare
+    -
+    - c-4 i:hat
+    - c-4 i:snare
+
+  bas-0:
+    - c-3 i:bass
+    - g-3*
+    - ---
+    - g-3
+    - c-3*
+    - ---
+    -
+    - g-3
+    - c-3*
+    - g-3
+    - c-3*
+    - g-3*
+    - c-3*
+    - ---
+    -
+    -
+
+  pad-0:
+    -
+    -
+    -
+    -
+    -
+    -
+    - d#4 i:arp-047
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
