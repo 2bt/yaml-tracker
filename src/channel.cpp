@@ -8,36 +8,41 @@
 #include "channel.h"
 using namespace std;
 
-
-void Channel::initialize() {
-
-	_shift = 0x7ffff8;
-	_state = State::Off;
-
-	CmdExecState ces({
+const vector<Channel::Command> Channel::get_default_instrument() {
+	return {
 		{ "wave",			"PULSE" },
 		{ "offset",			"0" },
 		{ "pulsewidth",		"0.5" },
 		{ "pulsewidth~",	"0" },
 		{ "panning",		"0" },
 		{ "volume",			"1" },
-		{ "vibrato_speed",	"0.1" },
-		{ "vibrato_depth",	"0" },
+		{ "resolution",		"0" },
+		{ "vibrato-speed",	"0.1" },
+		{ "vibrato-depth",	"0" },
+		{ "gliss",			"0" },
 
-		{ "lpf",			"OFF" },
-		{ "lpf_freq",		"2000" },
-		{ "lpf_freq~",		"0" },
-		{ "lpf_reso",		"1" },
+		{ "filter",			"OFF" },
+		{ "filter-freq",		"2000" },
+		{ "filter-freq~",		"0" },
+		{ "filter-reso",		"1" },
 
 		{ "attack",			"0.002" },
 		{ "decay",			"0.99992" },
 		{ "sustain",		"0.5" },
 		{ "release",		"0.999" },
-	});
+	};
+}
+
+void Channel::initialize() {
+
+	_shift = 0x7ffff8;
+	_state = State::Off;
+
+	CmdExecState ces(get_default_instrument());
 	exec_commands(ces);
 
-	_lpf.initialize();
-	_lpf.set(_lpf_freq, _lpf_reso);
+	_filter.initialize();
+	_filter.set(_filter_freq, _filter_reso);
 
 
 }
@@ -48,19 +53,35 @@ void Channel::tick(const map<string, vector<Command>>& instruments) {
 
 
 
+	// pulse width
 	_pulsewidth = fmodf(_pulsewidth + _pulsewidth_sweep, 1);
 
-	if (_lpf_freq_sweep != 0) {
-		_lpf_freq += _lpf_freq_sweep;
-		if (_lpf_freq < 10) _lpf_freq = 10;
-		_lpf.set(_lpf_freq, _lpf_reso);
+	// filter
+	if (_filter_freq_sweep != 0) {
+		_filter_freq += _filter_freq_sweep;
+		if (_filter_freq < 10) _filter_freq = 10;
+		_filter.set(_filter_freq, _filter_reso);
 	}
 
+	// glissando
+	if (_gliss > 0) {
+		if (_note < _note_dst) {
+			_note += _gliss;
+			if (_note > _note_dst) _note = _note_dst;
+		}
+		else {
+			_note -= _gliss;
+			if (_note < _note_dst) _note = _note_dst;
+		}
+	}
 
-
+	// vibrato
 	_vibrato_phase = fmodf(_vibrato_phase + _vibrato_speed, 1);
 	float vib = sinf(_vibrato_phase * 2 * M_PI) * _vibrato_depth;
-	_speed = powf(2, float(_note + _offset + vib - 57) * (1 / 12.0)) * (440.0 / 44100);
+
+
+	// calculate osc speed
+	_speed = powf(2, (_note + _offset + vib - 57) * (1 / 12.0)) * (440.0 / 44100);
 }
 
 
@@ -80,18 +101,22 @@ void Channel::exec_commands(CmdExecState& ces,
 			const string& n = cmd.value;
 			if (n == "---") _state = State::Release;
 			else {
-				bool slide = n.size() == 4 && n[3] == '*';
-				if ((n.size() != 3 && !slide) ||
+				bool gliss = n.size() == 4 && n[3] == '*';
+				if ((n.size() != 3 && !gliss) ||
 					n[0] < 'a' || n[0] > 'g' ||
 					(n[1] != '-' && n[1] != '#') ||
 					n[2] < '0' || n[2] > '9') {
 					throw logic_error("error interpreting note: " + n);
 				}
-				_note = string("ccddeffggaab").find(n[0]);
-				_note += n[1] == '#';
-				_note += (n[2] - '0') * 12;
+				_note_dst = string("ccddeffggaab").find(n[0]);
+				_note_dst += n[1] == '#';
+				_note_dst += (n[2] - '0') * 12;
 
-				if (!slide) {
+				if (gliss) {
+					if (_gliss <= 0) _note = _note_dst;
+				}
+				else {
+					_note = _note_dst;
 					_state = State::Attack;
 					_level = 0;
 					_phase = 0;
@@ -151,11 +176,17 @@ void Channel::exec_commands(CmdExecState& ces,
 		else if (cmd.name == "pulsewidth~" || cmd.name == "pw~") {
 			_pulsewidth_sweep = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "vibrato_speed" || cmd.name == "vs") {
+		else if (cmd.name == "vibrato-speed" || cmd.name == "vs") {
 			_vibrato_speed = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "vibrato_depth" || cmd.name == "vd") {
+		else if (cmd.name == "vibrato-depth" || cmd.name == "vd") {
 			_vibrato_depth = strtofloat(cmd.value);
+		}
+		else if (cmd.name == "gliss") {
+			_gliss = strtofloat(cmd.value);
+		}
+		else if (cmd.name == "resolution") {
+			_resolution = strtoint(cmd.value);
 		}
 		else if (cmd.name == "wave" || cmd.name == "w") {
 			try {
@@ -171,28 +202,28 @@ void Channel::exec_commands(CmdExecState& ces,
 				throw logic_error("error parsing wave: " + cmd.name);
 			}
 		}
-		else if (cmd.name == "lpf") {
-			if (cmd.value == "ON") _lpf_active = true;
-			else if (cmd.value == "OFF") _lpf_active = false;
-			else throw logic_error("error parsing lpf: " + cmd.name);
+		else if (cmd.name == "filter") {
+			if (cmd.value == "ON") _filter_active = true;
+			else if (cmd.value == "OFF") _filter_active = false;
+			else throw logic_error("error parsing filter: " + cmd.name);
 		}
-		else if (cmd.name == "lpf_freq") {
-			_lpf_freq = strtofloat(cmd.value);
-			_lpf.set(_lpf_freq, _lpf_reso);
+		else if (cmd.name == "filter-freq") {
+			_filter_freq = strtofloat(cmd.value);
+			_filter.set(_filter_freq, _filter_reso);
 		}
-		else if (cmd.name == "lpf_freq+") {
-			_lpf_freq += strtofloat(cmd.value);
-			if (_lpf_freq < 10) _lpf_freq = 10;
-			_lpf.set(_lpf_freq, _lpf_reso);
+		else if (cmd.name == "filter-freq+") {
+			_filter_freq += strtofloat(cmd.value);
+			if (_filter_freq < 10) _filter_freq = 10;
+			_filter.set(_filter_freq, _filter_reso);
 		}
-		else if (cmd.name == "lpf_freq~") {
-			_lpf_freq_sweep = strtofloat(cmd.value);
+		else if (cmd.name == "filter-freq~") {
+			_filter_freq_sweep = strtofloat(cmd.value);
 		}
-		else if (cmd.name == "lpf_reso") {
-			_lpf_reso = strtofloat(cmd.value);
-			_lpf.set(_lpf_freq, _lpf_reso);
+		else if (cmd.name == "filter-reso") {
+			_filter_reso = strtofloat(cmd.value);
+			_filter.set(_filter_freq, _filter_reso);
 		}
-		else if (cmd.name == "loop_count") {
+		else if (cmd.name == "loop-count") {
 			ces.loop_count = strtoint(cmd.value);
 		}
 		else if (cmd.name == "loop") {
@@ -279,7 +310,11 @@ void Channel::addMix(float frame[2]) {
 
 	amp *= _level;
 
-	if (_lpf_active) amp = _lpf.mix(amp);
+	if (_resolution > 0) {
+		amp = int((amp + 1) * _resolution) / float(_resolution) - 1;
+	}
+
+	if (_filter_active) amp = _filter.mix(amp);
 
 	amp *= _volume;
 

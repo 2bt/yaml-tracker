@@ -41,18 +41,18 @@ instruments:
 
 
   b: >
-    lpf:ON
-    lpf_reso:3
-    lpf_freq:2000
+    filter:ON
+    filter-reso:3
+    filter-freq:2000
 
     wave:PULSE
     pulsewidth:0.5
     offset:0
 
-    loop_count:6
+    loop-count:6
 
     wait:1
-    lpf_freq+:-200
+    filter-freq+:-200
     loop:-2
 
 
@@ -65,23 +65,23 @@ instruments:
     sustain:0
     release:0.9993
 
-    lpf:ON
-    lpf_freq:10000
-    lpf_reso:1
+    filter:ON
+    filter-freq:10000
+    filter-reso:1
 
     o:-2 w:NOISE :2
 
     w:PULSE
-    lpf_freq:1400
+    filter-freq:1400
 
     :1
     o+:-2
     loop:-2
 
   snare: >
-    lpf:ON
-    lpf_freq:8000
-    lpf_reso:4
+    filter:ON
+    filter-freq:8000
+    filter-reso:4
     volume:1
     panning:0.1
     sustain:0
@@ -93,7 +93,7 @@ instruments:
     wave:PULSE
     wait:1
     offset+:-1
-    lpf_freq+:-800
+    filter-freq+:-800
     loop:-6
 
 patterns:

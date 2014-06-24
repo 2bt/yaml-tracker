@@ -1,10 +1,18 @@
 frames: 800
 ticks: 8
 table:
-  - [ d1, m1,  b1 ]
-  - [ d2, m1,  b2 ]
-  - [ d3, ---, b3 ]
-  - [ d4, m1,  b4 ]
+  - [ ---, ---, b1 ]
+  - [ ---, ---, b2 ]
+  - [ ---, ---, b3 ]
+  - [ ---, ---, b4 ]
+  - [ d1,  m1,  b1 ]
+  - [ d2,  m1,  b2 ]
+  - [ d3,  ---, b3 ]
+  - [ d4,  m1,  b4 ]
+  - [ d1,  m1,  b1 ]
+  - [ d2,  m1,  b2 ]
+  - [ d3,  ---, b3 ]
+  - [ d4,  m1,  b4 ]
 
 instruments:
   bass:
@@ -14,9 +22,15 @@ instruments:
     decay:0.99
     release:0.99
 
+    filter:ON
+    filter-freq:2400
+    filter-reso:3
+
     o:0
-    pw:0.4
-    w:PULSE
+    pw:0
+    pw~:0.03
+    w:TRIANGLE
+    resolution:32
     :5
     sustain:0
 
@@ -116,6 +130,21 @@ instruments:
 patterns:
   ---:
     - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
   b1:
     - c-2 i:bass p:0.4
     - c-2

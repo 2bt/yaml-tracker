@@ -39,8 +39,11 @@ public:
 		std::string name;
 		std::string value;
 	};
+	static const std::vector<Command> get_default_instrument();
 
-	Channel() {}
+	Channel() {
+		_level = 0;
+	}
 	void initialize();
 	void addMix(float frame[2]);
 	void tick(const std::map<std::string, std::vector<Command>>& instruments);
@@ -69,7 +72,10 @@ private:
 	unsigned int	_shift;
 
 
-	int				_note;
+	float			_note;
+	float			_note_dst;
+	float			_gliss;
+
 	float			_offset;
 	float			_volume;
 	float			_panning[2];
@@ -84,13 +90,14 @@ private:
 	float			_vibrato_phase;
 	float			_vibrato_speed;
 	float			_vibrato_depth;
+	int				_resolution;
 	Wave			_wave;
 
-	bool			_lpf_active;
-	float			_lpf_freq;
-	float			_lpf_freq_sweep;
-	float			_lpf_reso;
-	LPF				_lpf;
+	bool			_filter_active;
+	float			_filter_freq;
+	float			_filter_freq_sweep;
+	float			_filter_reso;
+	LPF				_filter;
 
 	std::string		_instrument;
 
@@ -114,7 +121,8 @@ private:
 	CmdExecState	_inst_ces;
 	CmdExecState	_row_ces;
 
-	void exec_commands(CmdExecState& ces, const std::map<std::string, std::vector<Command>>& instruments = {});
+	void exec_commands(CmdExecState& ces,
+		const std::map<std::string, std::vector<Command>>& instruments = {});
 
 };
 

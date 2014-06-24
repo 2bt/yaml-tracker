@@ -75,6 +75,8 @@ void Server::initialize(const YAML::Node& n) {
 	Lock lock;
 
 	_root = n;
+
+	_instruments = { { "default", Channel::get_default_instrument() } };
 	for (const auto& pair : _root["instruments"]) {
 		_instruments[pair.first.as<string>()] =
 			get_commands(pair.second.as<string>());

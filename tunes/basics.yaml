@@ -19,16 +19,16 @@ instruments:
     vs:0.08
     vd:0.2
   bass: >
-    lpf:ON
-    lpf_reso:2
-    pw:0.2
-    o:-12
-    :20 ---
+    filter:ON
+    filter-reso:2
+    pulsewidth:0.2
+    offset:-12
+    wait:20 ---
 
 
   arp: >
-    pw:0.2
-    pw~:0.006
+    pulsewidth:0.2
+    pulsewidth~:0.006
     attack:0.002
     release:0.9999
   arp1: >
@@ -230,7 +230,7 @@ patterns:
 
 
   b1:
-    - c-3 i:bass lpf_freq:100 lpf_freq~:10
+    - c-3 i:bass filter-freq:100 filter-freq~:10
     - c-3
     - ---
     - c-3
@@ -264,7 +264,7 @@ patterns:
     - ---
     - d#3
   b2:
-    - g-2 lpf_freq~:20
+    - g-2 filter-freq~:20
     - g-2
     - ---
     - g-2
@@ -281,7 +281,7 @@ patterns:
     - ---
     - a-3
 
-    - c-3 lpf_freq~:-40
+    - c-3 filter-freq~:-40
     - c-3
     - ---
     - c-3
@@ -299,7 +299,7 @@ patterns:
     - g-2
 
   b3:
-    - e-3 i:bass lpf_freq:100 lpf_freq~:10
+    - e-3 i:bass filter-freq:100 filter-freq~:10
     - e-3
     - ---
     - e-3
@@ -332,7 +332,7 @@ patterns:
     -
     - a#2
   b4:
-    - a-2 lpf_freq~:-10
+    - a-2 filter-freq~:-10
     - a-2
     - ---
     - a-2
