@@ -112,10 +112,7 @@ void Channel::exec_commands(CmdExecState& ces,
 				_note_dst += n[1] == '#';
 				_note_dst += (n[2] - '0') * 12;
 
-				if (gliss) {
-					if (_gliss <= 0) _note = _note_dst;
-				}
-				else {
+				if (!gliss) {
 					_note = _note_dst;
 					_state = State::Attack;
 					_level = 0;
@@ -313,11 +310,9 @@ void Channel::addMix(float frame[2]) {
 	default: break;
 	}
 
-	amp *= _level;
+	if (_resolution > 0) amp = floorf(amp * _resolution) / _resolution;
 
-	if (_resolution > 0) {
-		amp = int((amp + 1) * _resolution) / float(_resolution) - 1;
-	}
+	amp *= _level;
 
 	if (_filter_active) amp = _filter.mix(amp);
 

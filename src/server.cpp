@@ -62,8 +62,10 @@ vector<Channel::Command> get_commands(const string& row) {
 			p = row.find_first_not_of(" \n\t", pos + 1);
 			pos = row.find_first_of(" \n\t", p);
 		}
-		cmd.value = row.substr(p, pos - p);
-		cmds.emplace_back(cmd);
+		if (cmd.name[0] != '#') {
+			cmd.value = row.substr(p, pos - p);
+			cmds.emplace_back(cmd);
+		}
 
 		p = row.find_first_not_of(" \n\t", pos);
 	}
