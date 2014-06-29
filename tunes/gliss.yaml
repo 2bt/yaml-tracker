@@ -2,8 +2,8 @@ frames: 400
 ticks: 16
 
 table:
-  - [ drm-0, prc-0, bas-0, pad-0 ]
-  - [ drm-0, prc-0, -----, ----- ]
+  - [ drm-0, kik-0, bas-0, pad-0, bss-0 ]
+  - [ drm-1, kik-0, -----, -----, bss-0 ]
 instruments:
   bass-init: >
     call:default
@@ -17,6 +17,20 @@ instruments:
 
   bass: >
     call:bass-init
+
+  bass2:
+    call:default
+    attack:0.01
+    volume:2
+    offset:-12
+    wave:TRIANGLE
+    pulsewidth:0.1
+    resolution:32
+    filter:ON
+    filter-reso:20
+    filter-freq:1000
+    release:0.99
+    sustain:0.5
 
 
   arp-047: >
@@ -121,8 +135,25 @@ patterns:
     -
     -
     -
+  bss-0:
+    - c-2 i:bass2
+    - ---
+    - c-2
+    - c-2
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
 
-  prc-0:
+  kik-0:
     - c-4 i:kick
     -
     -
@@ -147,7 +178,24 @@ patterns:
     - c-4 i:snare
     -
     - c-4 i:hat
+    - c-4 i:hat v:0.1
     -
+    -
+    - c-4 i:hat
+    -
+    - c-4 i:snare
+    - c-4 i:hat v:0.1
+    - c-4 i:hat
+    -
+  drm-1:
+    -
+    - c-4 i:hat v:0.1
+    - c-4 i:hat
+    -
+    - c-4 i:snare
+    -
+    - c-4 i:hat
+    - c-4 i:hat v:0.1
     -
     -
     - c-4 i:hat
