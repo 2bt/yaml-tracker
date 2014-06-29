@@ -1,10 +1,16 @@
 #include <iostream>
+#include <signal.h>
 #include <sys/inotify.h>
 
 #include "server.h"
 
 
 using namespace std;
+
+
+
+bool running = true;
+void done(int sig) { running = false; }
 
 
 int main(int argc, char** argv) {
@@ -23,12 +29,13 @@ int main(int argc, char** argv) {
 	Server server;
 	server.initialize(node);
 
-
-	int fd = inotify_init();
+	int fd = inotify_init1(IN_NONBLOCK);
 	int wd = inotify_add_watch(fd, filename, IN_MODIFY);
-	for (;;) {
+
+	signal(SIGINT, done);
+	while (running) {
 		inotify_event event;
-		if(read(fd, &event, sizeof(inotify_event)) > 0) {
+		while (read(fd, &event, sizeof(inotify_event)) > 0) {
 			if (event.wd != wd) continue;
 
 			inotify_rm_watch(fd, wd);
@@ -42,6 +49,8 @@ int main(int argc, char** argv) {
 				cout << e.what() << endl;
 			}
 		}
+
+		usleep(10000);
 	}
 
 	inotify_rm_watch(fd, wd);
