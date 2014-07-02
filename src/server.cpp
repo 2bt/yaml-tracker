@@ -105,15 +105,20 @@ void Server::tick() {
 	YAML::Node tr = _root["table"][_block];
 
 	for (int i = 0; i < int(_channels.size()); i++) {
-		Channel& chan = _channels[i];
 
-		if (_tick == 0 && i < int(tr.size())) {
+		if (_tick == 0 && i < int(tr.size()) && !tr[i].IsNull()) {
 			string pat = tr[i].as<string>();
 			if (!_root["patterns"][pat]) throw logic_error("undefined pattern: " + pat);
 			YAML::Node row = _root["patterns"][pat][_row];
-			if (!row.IsNull() && row.IsDefined()) {
+			if (row.IsScalar()) {
 				auto cmds = get_commands(row.as<string>());
-				chan.set_row_commands(cmds);
+				_channels[i].set_row_commands(cmds);
+			}
+			else if (row.IsSequence()) {
+				for (int j = 0; j < row.size(); j++) {
+					auto cmds = get_commands(row[j].as<string>());
+					_channels[(i + j) % _channels.size()].set_row_commands(cmds);
+				}
 			}
 		}
 
@@ -134,12 +139,12 @@ void Server::tick() {
 						+ string(1, '0' + i/12);
 					last_note = event.val;
 				}
-				if (!row.empty()) chan.set_row_commands({ { "note", row } });
+				if (!row.empty()) _channels[i].set_row_commands({ { "note", row } });
 
 			}
 		}
 
-		chan.tick(_instruments);
+		_channels[i].tick(_instruments);
 	}
 }
 
