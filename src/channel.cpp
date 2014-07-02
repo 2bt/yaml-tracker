@@ -19,7 +19,7 @@ const vector<Channel::Command> Channel::get_default_instrument() {
 		{ "resolution",		"0" },
 		{ "vibrato-speed",	"0.1" },
 		{ "vibrato-depth",	"0" },
-		{ "gliss",			"0" },
+		{ "gliss",			"1" },
 
 		{ "filter",			"OFF" },
 		{ "filter-freq",	"2000" },
@@ -118,12 +118,12 @@ void Channel::exec_commands(CmdExecState& ces,
 					_level = 0;
 					_phase = 0;
 					_vibrato_phase = 0;
+					if (!_instrument.empty()) {
+						_inst_ces.set(instruments.at(_instrument));
+						exec_commands(_inst_ces, instruments);
+					}
 				}
 
-				if (!_instrument.empty()) {
-					_inst_ces.set(instruments.at(_instrument));
-					exec_commands(_inst_ces, instruments);
-				}
 			}
 		}
 
