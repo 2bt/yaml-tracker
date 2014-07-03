@@ -122,10 +122,10 @@ void Server::tick() {
 			string pat = tr[i].as<string>();
 			if (!_root["patterns"][pat]) throw logic_error("undefined pattern: " + pat);
 			YAML::Node row = _root["patterns"][pat][_row];
-			if (!row.IsScalar()) continue;
-			auto row_cmds = get_multi_commands(row.as<string>());
-			for (int j = 0; j < (int) row_cmds.size(); j++) {
-				_channels[(i + j) % _channels.size()].set_row_commands(row_cmds[j]);
+			if (row.IsScalar()) {
+				auto cmds = get_multi_commands(row.as<string>());
+				int l = min(cmds.size(), _channels.size() - i + cmds.size());
+				for (int j = 0; j < l; j++) _channels[i + j].set_row_commands(cmds[j]);
 			}
 		}
 
