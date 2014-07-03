@@ -49,25 +49,37 @@ Server::~Server() {
 
 
 
-vector<Channel::Command> get_commands(const string& row) {
+static vector<Channel::Command> get_commands(const string& s) {
 	vector<Channel::Command> cmds;
-
-	size_t p = row.find_first_not_of(" \n\t");
+	size_t p = s.find_first_not_of(" \n\t");
 	while (p != string::npos) {
 		Channel::Command cmd = { "note", "" };
 
-		size_t pos = row.find_first_of(" \n\t:", p);
-		if (pos < row.length() - 1 && row[pos] == ':') {
-			cmd.name = row.substr(p, pos - p);
-			p = row.find_first_not_of(" \n\t", pos + 1);
-			pos = row.find_first_of(" \n\t", p);
+		size_t pos = s.find_first_of(" \n\t:", p);
+		if (pos < s.length() - 1 && s[pos] == ':') {
+			cmd.name = s.substr(p, pos - p);
+			p = s.find_first_not_of(" \n\t", pos + 1);
+			pos = s.find_first_of(" \n\t", p);
 		}
 		if (cmd.name[0] != '#') {
-			cmd.value = row.substr(p, pos - p);
+			cmd.value = s.substr(p, pos - p);
 			cmds.emplace_back(cmd);
 		}
 
-		p = row.find_first_not_of(" \n\t", pos);
+		p = s.find_first_not_of(" \n\t", pos);
+	}
+	return cmds;
+}
+
+
+static vector<vector<Channel::Command>> get_multi_commands(const string& s) {
+	vector<vector<Channel::Command>> cmds;
+	size_t p1 = 0;
+	size_t p2 = 0;
+	while (p2 != string::npos) {
+		p2 = s.find('/', p1);
+		cmds.push_back(get_commands(s.substr(p1, p2 - p1)));
+		p1 = p2 + 1;
 	}
 	return cmds;
 }
@@ -110,17 +122,13 @@ void Server::tick() {
 			string pat = tr[i].as<string>();
 			if (!_root["patterns"][pat]) throw logic_error("undefined pattern: " + pat);
 			YAML::Node row = _root["patterns"][pat][_row];
-			if (row.IsScalar()) {
-				auto cmds = get_commands(row.as<string>());
-				_channels[i].set_row_commands(cmds);
-			}
-			else if (row.IsSequence()) {
-				for (int j = 0; j < row.size(); j++) {
-					auto cmds = get_commands(row[j].as<string>());
-					_channels[(i + j) % _channels.size()].set_row_commands(cmds);
-				}
+			if (!row.IsScalar()) continue;
+			auto row_cmds = get_multi_commands(row.as<string>());
+			for (int j = 0; j < (int) row_cmds.size(); j++) {
+				_channels[(i + j) % _channels.size()].set_row_commands(row_cmds[j]);
 			}
 		}
+
 
 		// midi
 		if (_midi && i == _midi_channel_nr) {

@@ -1,0 +1,232 @@
+ticks: 16
+frames: 400
+table:
+
+  - [ bass0, poly0,, pad0,,, beat0, ]
+  - [ bass1, poly0,, pad1,,, beat1, ]
+  - [ bass0, poly0,, pad2,,, beat0, ]
+  - [ bass1, poly0,, pad3,,, beat2, ]
+
+  - [ bass0, poly0,, pad0,,, beat0, ]
+  - [ bass1, poly0,, pad4,,, beat1, ]
+  - [ bass0, poly0,, pad5,,, beat0, ]
+  - [ bass1, poly0,, pad6,,, beat2, ]
+
+instruments:
+  lead1: >
+    call:default
+    volume:0.6
+    panning:-0.3
+    pulsewidth:0.5
+
+  lead2: >
+    call:default
+    volume:0.6
+    panning:0.3
+    pulsewidth:0.1
+    pulsewidth~:0.009
+
+    wait:48
+    vibrato-depth:0.4
+    vibrato-speed:0.07
+
+  bass: >
+    call:default
+    filter:ON
+
+    filter-reso:1
+    filter-freq:4000
+    filter-freq~:-270
+    wait:9
+    filter-freq~:-80
+    wait:13
+    filter-freq~:0
+
+
+  pad:
+    call:default
+    wave:TRIANGLE
+    attack:0.000015
+    decay:0.99999
+    release:0.999987
+    vibrato-depth:0.2
+    vibrato-speed:0.05
+
+  pad1:
+    call:pad
+    panning:0.3
+  pad2:
+    call:pad
+    panning:0.1
+  pad3:
+    call:pad
+    panning:-0.4
+
+  beat: >
+    call:default
+    panning:0
+    volume:1.5
+    decay:0.99994
+    release:0.9998
+    resolution:20
+    offset:30
+    wave:C64NOISE
+    wait:1
+    wave:SINE
+    offset:1
+    loop-count:5
+    wait:1
+    offset+:-4
+    loop:-2
+    wait:1 ---
+
+  snare: >
+    call:default
+    panning:0.2
+    decay:0.99994
+    release:0.9998
+    filter:ON
+    filter-freq:6000
+    wave:NOISE
+    wait:3 ---
+
+  snare2: >
+    call:default
+    volume:1.2
+    panning:0.1
+    decay:0.99994
+    release:0.9996
+    wave:TRIANGLE
+    resolution:5
+    offset:7
+    wait:1 ---
+    offset+:-5
+    wait:1
+    loop-count:3
+    offset+:-3
+    wait:1
+    loop:-2
+
+
+patterns:
+  beat0:
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    -
+  beat1:
+    - c-4 i:beat
+    - c-4 i:beat
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    -
+  beat2:
+    - c-4 i:beat
+    - c-4 i:beat
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+
+  poly0:
+    - c-4 i:lead1 / g-4 i:lead2
+    - ---         / ---
+    - c-4         / g-4
+    - ---         / ---
+    -
+    - c-4         / g-4
+    - c-4*
+    - d#4*
+    - c-4*        / a#4*
+    -
+    - ---         / ---
+    -
+    - g-4
+    -
+    -             / c-5
+    - ---         / ---
+
+  bass0:
+    - c-2 i:bass
+    - ---
+    - c-2
+    - ---
+    -
+    - c-2
+    - ---
+    - c-2
+    - c-2
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+  bass1:
+    - c-2 i:bass
+    - ---
+    - c-2
+    - ---
+    -
+    - c-2
+    - ---
+    - c-2
+    - c-2
+    - ---
+    -
+    -
+    -
+    -
+    - a#1
+    - ---
+
+
+  pad0:
+    - g#4 i:pad1 / c-5 i:pad2 / d#5 i:pad3
+  pad1:
+    - a#4 i:pad1 / d-5 i:pad2 / f-5 i:pad3
+  pad2:
+    - c-5 i:pad1 / d-5 i:pad2 / g-5 i:pad3
+  pad3:
+    - --- / --- / ---
+
+  pad4:
+    - f-4 i:pad1 / a#4 i:pad2 / d-5 i:pad3
+  pad5:
+    - f-4 i:pad1 / g-4 i:pad2 / c-5 i:pad3
+  pad6:
+    - e-4* --- / --- / ---

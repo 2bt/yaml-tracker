@@ -1,0 +1,325 @@
+frames: 700
+ticks: 8
+
+table:
+#  - [ b0,   ,   ,, p0, a0 ]
+#  - [ b1,   ,   ,, p0, a0 ]
+  - [ b0, d0, s0,, p0, a0 ]
+  - [ b1, d0, s0,, p0, a0 ]
+
+instruments:
+  hat: >
+    call:default
+    volume:0.7
+    sustain:0
+    decay:0.999
+    wave:NOISE
+
+  bass: >
+    call:default
+    offset:-12
+    filter:ON
+    pulsewidth:0.4
+    pulsewidth~:0.02
+    filter-reso:1.5
+    filter-freq:2000
+    filter-freq~:-180
+    wait:10
+    filter-freq~:0
+    pulsewidth~:0
+    vibrato-speed:0.1
+    vibrato-depth:0.3
+
+  beat: >
+    call:default
+    panning:0
+    volume:1.2
+    decay:0.99994
+    release:0.9998
+    resolution:20
+
+    offset:30
+    wave:C64NOISE
+    wait:1
+
+    wave:SINE
+    offset:1
+
+    loop-count:5
+    wait:1
+    offset+:-4
+    loop:-2
+
+    wait:1 ---
+
+  snare: >
+    call:default
+    volume:0.8
+    panning:0.2
+    decay:0.99994
+    release:0.9998
+    filter:ON
+    filter-freq:6000
+    wave:NOISE
+
+    wait:3 ---
+  snare2: >
+    call:default
+    panning:0.2
+    decay:0.99994
+    release:0.9996
+    wave:TRIANGLE
+    resolution:5
+    offset:7
+    wait:1
+    ---
+    offset+:-5
+    wait:1
+
+    loop-count:3
+    offset+:-3
+    wait:1
+    loop:-2
+
+
+
+  arp: >
+    call:default
+    volume:0.4
+    wave:PULSE
+    pulsewidth:0.5
+    pulsewidth~:0.01
+    release:0.9997
+
+
+  arp037:
+    call:arp
+
+    offset:0
+    wait:2
+    offset:3
+    wait:2
+    offset:7
+    wait:2
+    offset:10
+    wait:2
+    loop:-8
+
+  arp047:
+    call:arp
+
+    offset:0
+    wait:2
+    offset:4
+    wait:2
+    offset:7
+    wait:2
+    offset:12
+    wait:2
+    loop:-8
+
+
+patterns:
+  s0:
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+  d0:
+    - c-4 i:beat
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - d-4 i:beat v:0.6
+
+
+
+  p0:
+    - c-4 i:hat
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3 wait:4 c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3 wait:4 c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4
+    - c-4 v:0.3
+    - c-4 v:0.3
+    - c-4 v:0.3 wait:4 c-4 v:0.3
+
+  b0:
+    - g-2 i:bass
+    -
+    - ---
+    - c-3
+    - ---
+    -
+    - g-2
+    - ---
+    - c-3
+    -
+    -
+    - d-3 d#3* gliss:0.1
+    -
+    -
+    - d-3
+    -
+    - a#2
+    -
+    - ---
+    - f-2
+    - ---
+    -
+    - f-2
+    - ---
+    - a#2
+    -
+    -
+    - ---
+    - g#2
+    -
+    -
+    - ---
+  b1:
+    - g-2
+    -
+    - ---
+    - c-3
+    - ---
+    -
+    - g-2
+    - ---
+    - c-3
+    -
+    -
+    - d-3 d#3* gliss:0.1
+    -
+    -
+    - d-3
+    -
+    - a#2
+    -
+    -
+    -
+    - ---
+    -
+    -
+    -
+    -
+    -
+    - a-2 wait:4 a#2
+    - f-2
+    -
+    -
+    - f#2
+    - ---
+
+  a0:
+    - c-5 i:arp037
+    - ---
+    -
+    - g-5
+    - ---
+    -
+    -
+    -
+    - d#5 i:arp047
+    -
+    - ---
+    -
+    -
+    -
+    - a#4
+    -
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - c-4 i:arp037
+    -
