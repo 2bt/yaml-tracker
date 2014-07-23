@@ -3,7 +3,7 @@ ticks: 12
 
 table:
   - [ a0,, b0, kick0 ]
-  - [ a1,, b0, kick1 ]
+  - [ a0,, b0, kick1 ]
 
 instruments:
   a: >
@@ -13,7 +13,8 @@ instruments:
 
 
   bass: >
-    pulsewidth~:0.001
+    pulsewidth:0.7
+    pulsewidth~:0.003
     offset:-12
     filter:ON
     filter-freq:10000
@@ -35,7 +36,7 @@ instruments:
     wait:1
     wave:PULSE
     pulsewidth:0.5
-    offset:-10
+    offset:-30
 
     wait:1
     offset+:-5
@@ -86,7 +87,7 @@ patterns:
     - c-5 i:hat
     - c-5 i:snare
     - c-5 i:hat
-    - c-5 i:hat
+    - c-5 i:kick
     - c-5 i:kick
     - c-5 i:hat
     - c-5 i:hat
@@ -98,7 +99,7 @@ patterns:
     - c-5 i:hat
     - c-5 i:snare
     - c-5 i:hat
-    - c-5 i:hat
+    - c-5 i:kick
     - c-5 i:kick
     - c-5 i:hat
     - c-5 i:hat
@@ -111,7 +112,7 @@ patterns:
     - c-5 i:hat
     - c-5 i:snare
     - c-5 i:hat
-    - c-5 i:hat
+    - c-5 i:kick
     - c-5 i:kick
     - c-5 i:hat
     - c-5 i:hat
@@ -123,7 +124,7 @@ patterns:
     - c-5 i:hat
     - c-5 i:snare
     - c-5 i:hat
-    - c-5 i:hat
+    - c-5 i:kick
     - c-5 i:kick
     - c-5 i:hat
     - c-5 i:hat
@@ -155,31 +156,6 @@ patterns:
     -
     -
     -
-  a1:
-    - c-5 i:a / g-4 i:a
-    - --- / ---
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    - a#4
-    - ---
-    - c-5 / g-4
-    - --- / ---
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
 
   b0:
     - c-3 i:bass
@@ -187,24 +163,24 @@ patterns:
     - ---
     - c-2
     - c-3
-    - c-4* gliss:3
+    - c-4* gliss:4
     - c-3*
     - ---
     - d#3
     - c-3
     - f-3
     - d#3
-    - c-3 i:bass
+    - c-3
     -
     - ---
     - c-2
     - c-3
-    - c-4* gliss:3
+    - c-4* gliss:4
     - c-3*
     - ---
     - d#3
     - c-3
-    - f-3
+    - a#2
     - d#3
 
 
