@@ -2,8 +2,7 @@ frames: 400
 ticks: 16
 
 table:
-  - [ drm-0, kik-0, bas-0, pad-0, bss-0 ]
-  - [ drm-1, kik-0, -----, -----, bss-0 ]
+  - [ drm0, kik0, bas0, pad0, bss0, mel0 ]
 instruments:
   bass-init: >
     call:default
@@ -18,20 +17,41 @@ instruments:
   bass: >
     call:bass-init
 
-  bass2:
+  subbass: >
     call:default
     attack:0.01
     volume:2
     offset:-12
     wave:TRIANGLE
-    pulsewidth:0.1
     resolution:32
     filter:ON
     filter-reso:20
     filter-freq:1000
     release:0.99
     sustain:0.5
+    pulsewidth:0.1
 
+  subbass2: >
+    call:subbass
+    pulsewidth:0.5
+
+  short: >
+    call:default
+    volume:0.8
+    pulsewidth:0.2
+    pulsewidth~:0.003
+    wave:TRIANGLE
+    vibrato-depth:12
+    vibrato-speed:0.001
+    decay:0.99
+
+      sustain:1
+      wait:4
+      sustain:0
+      wait:4
+      sustain:0.2
+      wait:6
+    loop:-6
 
   arp-047: >
     call:default
@@ -118,27 +138,10 @@ instruments:
     filter-reso:3
 
 patterns:
-  -----:
+  bss0:
+    - c-2 i:subbass
     - ---
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-  bss-0:
-    - c-2 i:bass2
-    - ---
-    - c-2
+    - c-2 i:subbass2
     - c-2
     - ---
     -
@@ -152,8 +155,24 @@ patterns:
     -
     -
     -
+    - c-2
+    - ---
+    - c-2 i:subbass2
+    - c-2 i:subbass
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - c-2 gliss:2 pw:0.5
+    - a#3*
+    - c-2*
 
-  kik-0:
+  kik0:
     - c-4 i:kick
     -
     -
@@ -170,7 +189,23 @@ patterns:
     -
     -
     -
-  drm-0:
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    -
+    -
+    - c-4 i:kick
+    -
+    - c-4 i:kick
+    -
+  drm0:
     -
     -
     - c-4 i:hat
@@ -187,7 +222,6 @@ patterns:
     - c-4 i:hat v:0.1
     - c-4 i:hat
     -
-  drm-1:
     -
     - c-4 i:hat v:0.1
     - c-4 i:hat
@@ -205,7 +239,7 @@ patterns:
     - c-4 i:hat
     - c-4 i:snare
 
-  bas-0:
+  bas0:
     - c-3 i:bass
     - g-3*
     - ---
@@ -222,8 +256,24 @@ patterns:
     - ---
     -
     -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
 
-  pad-0:
+  pad0:
     -
     -
     -
@@ -239,4 +289,22 @@ patterns:
     -
     -
     -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  mel0:
+    - g#4 i:short
     -

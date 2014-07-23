@@ -1,0 +1,315 @@
+frames: 530
+ticks: 16
+table:
+
+  - [ b0, m0, d0, ]
+  - [ b1, m0, d1, ]
+  - [ b0, m0, d2, ]
+  - [ b2, m0, d3, ]
+
+  - [ b3, m0, d7, ]
+  - [ b4, m0, d7, ]
+
+instruments:
+  midi: >
+    vibrato-depth:0.1
+    vibrato-speed:0.1
+
+  bell: >
+    call:default
+    volume:0.7
+    sustain:0.3
+    decay:0.99985
+    release:0.99985
+    vibrato-depth:0.05
+    vibrato-speed:0.1
+    wait:14 ---
+
+  bass:
+    call:default
+    pulsewidth:0.4
+    pulsewidth~:0.008
+
+    filter:ON
+    filter-reso:2
+
+    filter-freq:3000
+
+    filter-freq~:-300
+    wait:4
+    filter-freq~:-200
+    wait:4
+    filter-freq~:-100
+    wait:7
+    filter-freq~:0
+
+  beat: >
+    call:default
+    panning:0
+    volume:1.8
+    decay:0.99994
+    release:0.9997
+
+    offset:30
+    wave:C64NOISE
+    wait:1
+
+    offset:-1
+    resolution:15
+    wave:TRIANGLE
+
+    loop-count:5
+      wait:1
+      offset+:-3.5
+    loop:-2
+    ---
+
+  snare: >
+    call:default
+    panning:0.2
+    decay:0.99994
+    release:0.9997
+    filter:ON
+    filter-freq:6000
+    wave:NOISE
+    wait:1 ---
+
+  snare2: >
+    call:default
+    volume:1.2
+    panning:0.1
+    decay:0.99994
+    release:0.9996
+    wave:TRIANGLE
+    resolution:5
+    offset:7
+    wait:1 ---
+    offset+:-5
+    wait:1
+    loop-count:3
+    offset+:-3
+    wait:1
+    loop:-2
+
+
+  tom: >
+    call:default
+    volume:1.2
+    panning:0.1
+    decay:0.99994
+    release:0.9996
+
+    wave:NOISE
+    resolution:5
+    wait:1
+    wave:TRIANGLE
+    offset:2
+    loop-count:4
+      wait:1
+      offset+:-3
+    loop:-2
+    ---
+
+
+
+patterns:
+  b0:
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - d-2 i:bass
+  b1:
+    - d-2 i:bass
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - d-2
+    - ---
+    -
+    -
+    -
+    -
+    -
+  b2:
+    - d-2 i:bass
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - d-2
+    - ---
+    -
+    -
+    -
+    -
+    - d-2
+
+  b3:
+    - d-2 i:bass
+    -
+    - ---
+    - d-2
+    - ---
+    - d-2
+    -
+    -
+    - ---
+    - d-2
+    -
+    - d-2
+    - d-2
+    - d-2
+    - ---
+    -
+  b4:
+    - d-2 i:bass
+    -
+    - ---
+    - d-2
+    - ---
+    - d-2
+    -
+    -
+    - ---
+    - d-2
+    -
+    - d-2
+    -
+    - c-2
+    -
+    -
+
+
+
+
+
+
+  m0:
+    -
+    - a-4 i:bell p:0.15
+    - d-5        p:-0.25
+    - a-5        p:-0.35
+    - g-5        p:-0.27
+    - c-5        p:0.23
+    - g-4        p:-0.36
+    - f-5        p:-0.07
+    - a#4        p:0.29
+    - f-4        p:0.26
+    - e-5        p:-0.34
+    - a-4        p:-0.26
+    - e-4        p:0.19
+    - c-5        p:0.05
+    - c-4        p:0.38
+    - g-4        p:0.01
+
+
+
+  d0:
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - g-4 i:tom
+    - d-4
+    - a-3
+    - c-4 i:beat
+  d1:
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - i:tom g-4 wait:11 g-4 wait:11 g-4
+    -
+    - i:tom d-4 wait:11 d-4 wait:11 d-4
+    -
+    - i:tom a-3 wait:11 a-3 wait:11 a-3
+    -
+  d2:
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    - i:tom g-4
+    -
+    - i:tom d-4
+    - i:tom g-4 wait:11 g-4 wait:11 g-4
+    -
+    - i:tom d-4
+    - a-3
+    -
+    - d-4
+    - a-3
+    - c-4 i:beat
+  d3:
+    - c-4 i:beat
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - i:tom g-4
+    -
+    - i:tom d-4
+    -
+    - i:tom g-4 wait:8 g-4
+    -
+    - i:tom d-4 wait:8 a-3
+
+  d7:
+    - c-4 i:beat
+    -
+    - c-4 i:snare / c-4 i:snare2
+    - c-4 i:beat
+    -
+    - c-4 i:beat
+    - c-4 i:snare / c-4 i:snare2
+    -
+    - c-4 i:beat
+    -
+    - c-4 i:snare / c-4 i:snare2
+    - c-4 i:beat
+    -
+    - c-4 i:beat
+    - c-4 i:snare / c-4 i:snare2
+    -
+
+

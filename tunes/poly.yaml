@@ -13,6 +13,14 @@ table:
   - [ bass1, poly0,, pad6,,, beat2, ]
 
 instruments:
+  midi: >
+    call:default
+    pulsewidth:0.4
+    pulsewidth~:0.001
+    wait:40
+    vibrato-depth:0.1
+    vibrato-speed:0.03
+
   lead1: >
     call:default
     volume:0.6
@@ -32,6 +40,7 @@ instruments:
 
   bass: >
     call:default
+    volume:1.1
     filter:ON
 
     filter-reso:1
@@ -43,7 +52,7 @@ instruments:
     filter-freq~:0
 
 
-  pad:
+  pad: >
     call:default
     wave:TRIANGLE
     attack:0.000015
@@ -52,13 +61,13 @@ instruments:
     vibrato-depth:0.2
     vibrato-speed:0.05
 
-  pad1:
+  pad1: >
     call:pad
     panning:0.3
-  pad2:
+  pad2: >
     call:pad
     panning:0.1
-  pad3:
+  pad3: >
     call:pad
     panning:-0.4
 

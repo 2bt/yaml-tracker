@@ -1,0 +1,262 @@
+ticks: 12
+frames: 600
+
+table:
+  - [ b0, a0, beat0,, hat ]
+  - [ b1, a1, beat1,, hat ]
+
+  - [ b2, a0, beat0,, hat ]
+  - [ b3, a1, beat1,, hat ]
+
+instruments:
+  midi: >
+    call:default
+    pulsewidth~:0.007
+    wait:30
+    vibrato-speed:0.1
+    vibrato-depth:0.4
+
+  beat: >
+
+    call:default
+    panning:0
+    volume:1.5
+    decay:0.99994
+    release:0.9998
+    resolution:4
+    offset:30
+    wave:C64NOISE
+    wait:1
+    wave:TRIANGLE
+    offset:1
+    loop-count:5
+    wait:1
+    offset+:-4
+    loop:-2
+    wait:1 ---
+
+  snare: >
+    call:default
+    panning:0.2
+    decay:0.99994
+    release:0.9998
+    filter:ON
+    filter-freq:6000
+    wave:NOISE
+    wait:3 ---
+
+  snare2: >
+    call:default
+    volume:1.2
+    panning:0.1
+    decay:0.99994
+    release:0.9996
+    wave:TRIANGLE
+    resolution:5
+    offset:7
+    wait:1 ---
+    offset+:-5
+    wait:1
+    loop-count:3
+    offset+:-3
+    wait:1
+    loop:-2
+
+  hat: >
+    call:default
+    panning:-0.1
+    volume:0.7
+    wave:NOISE
+    sustain:0
+    decay:0.9995
+    filter:ON
+    filter-freq:6000
+
+  a: >
+    call:default
+    v:0
+    wave:TRIANGLE
+    pulsewidth~:0.005
+    attack:0.001
+    decay:0.99996
+    release:0.99996
+
+  a047: >
+    call:a
+      offset:0
+      wait:2
+      offset:4
+      wait:2
+      offset:7
+      wait:2
+    loop:-6
+  a037: >
+    call:a
+      offset:0
+      wait:2
+      offset:3
+      wait:2
+      offset:7
+      wait:2
+    loop:-6
+
+  b0: >
+    offset:-12
+    wave:PULSE
+    pulsewidth:0.2
+
+patterns:
+  b0:
+    -
+    - c-3 i:b0
+    - ---
+    -
+    - c-3
+    -
+    - ---
+    -
+    - c-3
+    - ---
+    -
+    - c-3
+    -
+    - ---
+  b1:
+    -
+    - c-3 i:b0
+    - ---
+    -
+    - c-3
+    -
+    - ---
+    -
+    - c-3
+    - ---
+    -
+    - c-3
+    -
+    - c-4
+    - ---
+    -
+  b2:
+    -
+    - c-3 i:b0
+    - ---
+    -
+    - c-3
+    -
+    - ---
+    -
+    - c-3
+    - ---
+    -
+    - c-3
+    -
+    - ---
+  b3:
+    -
+    - c-3 i:b0
+    - ---
+    -
+    - c-3
+    -
+    - ---
+    -
+    - d-3
+    - ---
+    -
+    - d-3
+    -
+    - d-4
+    - ---
+    -
+
+  a0:
+    - e-5 i:a037
+    - ---
+    -
+    -
+    -
+    -
+    -
+    - e-5 i:a037
+    - ---
+    -
+    -
+    -
+    -
+    -
+  a1:
+    - e-5 i:a037
+    - ---
+    -
+    -
+    -
+    -
+    -
+    - f-5 i:a047
+    - ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  beat0:
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+  beat1:
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    - c-4 i:beat
+    -
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+    -
+    - c-4 i:snare / c-4 i:snare2
+    -
+
+
+  hat:
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -
+    - c-5 i:hat
+    -

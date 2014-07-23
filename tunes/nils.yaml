@@ -35,7 +35,7 @@ table:
 
 instruments:
 
-  midi:
+  midi: >
     call:default
     wave:TRIANGLE
     pulsewidth:0

@@ -1,0 +1,210 @@
+frames: 500
+ticks: 12
+
+table:
+  - [ a0,, b0, kick0 ]
+  - [ a1,, b0, kick1 ]
+
+instruments:
+  a: >
+    wave:TRIANGLE
+    pulsewidth:0
+    pulsewidth~:0.01
+
+
+  bass: >
+    pulsewidth~:0.001
+    offset:-12
+    filter:ON
+    filter-freq:10000
+    filter-reso:2
+
+    filter-freq~:-1000
+    wait:7
+    filter-freq~:-300
+    wait:2
+    filter-freq~:-10
+
+
+  kick: >
+    call:default
+    release:0.99
+    filter:ON
+    filter-freq:5000
+    wave:NOISE
+    wait:1
+    wave:PULSE
+    pulsewidth:0.5
+    offset:-10
+
+    wait:1
+    offset+:-5
+    wait:1
+    offset+:-5
+    wait:1
+    offset+:-5
+    wait:1
+    offset+:-5
+    ---
+
+  hat: >
+    call:default
+    volume:0.4
+    wave:NOISE
+    decay:0.9996
+    release:0.9996
+    sustain:0
+
+
+
+  snare: >
+    call:default
+    decay:0.9998
+    release:0.9998
+    sustain:0
+
+    wave:NOISE
+    wait:1
+    wave:TRIANGLE
+    pulsewidth:0.5
+    offset:-10
+
+      wait:1
+      wave:NOISE
+      wait:1
+      offset+:-5
+      ---
+    loop:-5
+
+  midi: >
+    call:a
+
+patterns:
+  kick0:
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+  kick1:
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:kick
+    - c-5 i:hat
+    - c-5 i:hat
+    - c-5 i:snare
+    - c-5 i:hat
+    - c-5 i:snare
+  a0:
+    - c-5 i:a / g-4 i:a
+    - --- / ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - a#4
+    - ---
+    - c-5 / g-4
+    - --- / ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  a1:
+    - c-5 i:a / g-4 i:a
+    - --- / ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - a#4
+    - ---
+    - c-5 / g-4
+    - --- / ---
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+
+  b0:
+    - c-3 i:bass
+    -
+    - ---
+    - c-2
+    - c-3
+    - c-4* gliss:3
+    - c-3*
+    - ---
+    - d#3
+    - c-3
+    - f-3
+    - d#3
+    - c-3 i:bass
+    -
+    - ---
+    - c-2
+    - c-3
+    - c-4* gliss:3
+    - c-3*
+    - ---
+    - d#3
+    - c-3
+    - f-3
+    - d#3
+
+
