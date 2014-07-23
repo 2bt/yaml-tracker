@@ -12,15 +12,31 @@
 #include "channel.h"
 
 
+struct TuneData {
+	void initialize(const YAML::Node& n);
+
+	YAML::Node table;
+	YAML::Node patterns;
+	std::map<std::string, std::vector<Channel::Command>> instruments;
+	int ticks_per_row;
+	int frames_per_tick;
+	int midi_channel_nr;
+};
+
+
 class Server {
 public:
-	enum { MIXRATE = 44100 };
+	enum {
+		MIXRATE = 44100,
+		CHANNEL_COUNT = 16
+	};
 
 
 	Server();
 	~Server();
 
 	void initialize(const YAML::Node& n);
+	void reinitialize(const YAML::Node& n);
 
 private:
 	struct Lock { Lock(); ~Lock(); };
@@ -38,14 +54,11 @@ private:
 
 	SNDFILE* _log;
 	PortMidiStream*	_midi;
-	int _midi_channel_nr;
 
 
-	// data linked to the song
-	YAML::Node _root;
-	std::map<std::string, std::vector<Channel::Command>> _instruments;
-	int _ticks_per_row;
-	int _frames_per_tick;
+	TuneData _tune;
+	TuneData _new_tune;
+	bool _switch_tune = false;
 
 	// position
 	int _frame;
@@ -53,6 +66,6 @@ private:
 	int _row;
 	int _block;
 
-	std::array<Channel, 16> _channels;
+	std::array<Channel, CHANNEL_COUNT> _channels;
 };
 

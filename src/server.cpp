@@ -40,10 +40,10 @@ Server::Server() {
 
 }
 Server::~Server() {
+	SDL_CloseAudio();
 	if (_log) sf_close(_log);
 	if (_midi) Pm_Close(_midi);
 	Pm_Terminate();
-	SDL_CloseAudio();
 }
 
 
@@ -85,22 +85,34 @@ static vector<vector<Channel::Command>> get_multi_commands(const string& s) {
 }
 
 
-void Server::initialize(const YAML::Node& n) {
-	Lock lock;
+void TuneData::initialize(const YAML::Node& n) {
+	table = n["table"];
+	patterns = n["patterns"];
 
-	_root = n;
-
-	_instruments = { { "default", Channel::get_default_instrument() } };
-	for (const auto& pair : _root["instruments"]) {
-		_instruments[pair.first.as<string>()] =
+	instruments = { { "default", Channel::get_default_instrument() } };
+	for (const auto& pair : n["instruments"]) {
+		instruments[pair.first.as<string>()] =
 			get_commands(pair.second.as<string>());
 	}
 
-	_ticks_per_row = _root["ticks"] ? _root["ticks"].as<int>() : 8;
-	_frames_per_tick = _root["frames"] ? _root["frames"].as<int>() : 800;
-	_midi_channel_nr = _root["midi"] ? strtoint(_root["midi"].as<string>())
-									 : _channels.size() - 1;
-	if (_instruments.count("midi")) _channels[_midi_channel_nr].set_midi_instrument();
+	ticks_per_row = n["ticks"] ? n["ticks"].as<int>() : 8;
+	frames_per_tick = n["frames"] ? n["frames"].as<int>() : 800;
+	midi_channel_nr = n["midi"] ? strtoint(n["midi"].as<string>())
+									 : Server::CHANNEL_COUNT - 1;
+}
+
+
+void Server::reinitialize(const YAML::Node& n) {
+	_new_tune.initialize(n);
+	_switch_tune = true;
+}
+
+
+void Server::initialize(const YAML::Node& n) {
+	Lock lock;
+
+	_tune.initialize(n);
+	if (_tune.instruments.count("midi")) _channels[_tune.midi_channel_nr].set_midi_instrument();
 
 	_frame = 0;
 	_tick = 0;
@@ -114,14 +126,14 @@ void Server::initialize(const YAML::Node& n) {
 
 
 void Server::tick() {
-	YAML::Node tr = _root["table"][_block];
+	YAML::Node tr = _tune.table[_block];
 
 	for (int i = 0; i < int(_channels.size()); i++) {
 
 		if (_tick == 0 && i < int(tr.size()) && !tr[i].IsNull()) {
 			string pat = tr[i].as<string>();
-			if (!_root["patterns"][pat]) throw logic_error("undefined pattern: " + pat);
-			YAML::Node row = _root["patterns"][pat][_row];
+			if (!_tune.patterns[pat]) throw logic_error("undefined pattern: " + pat);
+			YAML::Node row = _tune.patterns[pat][_row];
 			if (row.IsScalar()) {
 				auto cmds = get_multi_commands(row.as<string>());
 				int l = min(cmds.size(), _channels.size() - i + cmds.size());
@@ -131,7 +143,7 @@ void Server::tick() {
 
 
 		// midi
-		if (_midi && i == _midi_channel_nr) {
+		if (_midi && i == _tune.midi_channel_nr) {
 			struct { unsigned char type, val, x, y; } event;
 			for (;;) {
 				int l = Pm_Read(_midi, (PmEvent*) &event, 1);
@@ -152,10 +164,14 @@ void Server::tick() {
 			}
 		}
 
-		_channels[i].tick(_instruments);
+		_channels[i].tick(_tune.instruments);
 	}
 }
 
+static inline short clamp_int_to_short(int x) {
+	x = x < -32768 ? -32768 : x;
+	return x > 32767 ? 32767 : x;
+}
 
 void Server::mix(short* buffer, int length) {
 	for (int i = 0; i < length; i += 2) {
@@ -164,18 +180,27 @@ void Server::mix(short* buffer, int length) {
 			try {
 				if (_frame == 0) tick();
 
-				if (++_frame >= _frames_per_tick) {
+				if (++_frame >= _tune.frames_per_tick) {
 					_frame = 0;
-					if (++_tick >= _ticks_per_row) {
+					if (++_tick >= _tune.ticks_per_row) {
 						_tick = 0;
 
-						if (_root["table"]) {
+						if (_tune.table) {
 							// take the length of the first pattern in the table row
-							string pat = _root["table"][_block][0].as<string>();
-							int pat_len = int(_root["patterns"][pat].size());
+							string pat = _tune.table[_block][0].as<string>();
+							int pat_len = int(_tune.patterns[pat].size());
 							if (++_row >= pat_len) {
 								_row = 0;
-								if (++_block >= int(_root["table"].size())) _block = 0;
+
+								if (_switch_tune) {
+									_switch_tune = false;
+									_tune = _new_tune;
+									if (_tune.instruments.count("midi")) _channels[_tune.midi_channel_nr].set_midi_instrument();
+									_block = 0;
+								}
+								else {
+									if (++_block >= int(_tune.table.size())) _block = 0;
+								}
 							}
 						}
 					}
@@ -199,8 +224,8 @@ DONE:
 
 		float frame[2] = { 0, 0 };
 		for (auto& chan : _channels) chan.addMix(frame);
-		buffer[i + 0] = frame[0] * 4000;
-		buffer[i + 1] = frame[1] * 4000;
+		buffer[i + 0] = clamp_int_to_short(frame[0] * 6000);
+		buffer[i + 1] = clamp_int_to_short(frame[1] * 6000);
 	}
 
 	sf_writef_short(_log, buffer, length / 2);

@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
 			try {
 				node = YAML::LoadFile(filename);
-				server.initialize(node);
+				server.reinitialize(node);
 			}
 			catch (const YAML::Exception& e) {
 				cout << e.what() << endl;
