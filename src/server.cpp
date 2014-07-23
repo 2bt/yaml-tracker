@@ -103,6 +103,11 @@ void TuneData::initialize(const YAML::Node& n) {
 
 
 void Server::reinitialize(const YAML::Node& n) {
+	if (_playing == false) {
+		initialize(n);
+		return;
+	}
+
 	_new_tune.initialize(n);
 	_switch_tune = true;
 }
