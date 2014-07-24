@@ -103,7 +103,7 @@ void TuneData::initialize(const YAML::Node& n) {
 
 
 void Server::reinitialize(const YAML::Node& n) {
-	if (_playing == false) {
+	if (_playing == false || !_tune.table.IsDefined()) {
 		initialize(n);
 		return;
 	}
