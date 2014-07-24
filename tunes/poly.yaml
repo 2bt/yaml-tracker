@@ -15,10 +15,11 @@ table:
 instruments:
   midi: >
     call:default
-    pulsewidth:0.4
+    wave:TRIANGLE
+    pulsewidth:0
     pulsewidth~:0.001
     wait:40
-    vibrato-depth:0.1
+    vibrato-depth:0.2
     vibrato-speed:0.03
 
   lead1: >
