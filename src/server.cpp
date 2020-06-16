@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <iostream>
 #include "util.h"
 #include "server.h"
 

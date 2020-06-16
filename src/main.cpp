@@ -1,6 +1,7 @@
 #include <iostream>
 #include <signal.h>
 #include <sys/inotify.h>
+#include <unistd.h>
 
 #include "server.h"
 
